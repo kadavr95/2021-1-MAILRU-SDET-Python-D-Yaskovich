@@ -1,8 +1,9 @@
 # Домашнее задание №
 
-Прошу @snicks92 или @crisscuola или @adamakalshchikov или @starborn11 проверить его.
+Прошу @snicks92 или @crisscuola или @adamakalshchikov или @stpn111 проверить его.
 
 Что было сделано:
+
 *
 
 *
