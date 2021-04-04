@@ -1,4 +1,3 @@
-import os
 import pytest
 from selenium import webdriver
 
@@ -16,7 +15,7 @@ def config(request):
 @pytest.fixture(scope='function')
 def driver(config):
     url = config['url']
-    browser = webdriver.Chrome(os.environ['CHROMEDRIVER_PATH'])
+    browser = webdriver.Chrome("/home/kadavr95/Documents/2021-1-MAILRU-SDET-Python-D-Yaskovich/homework01/chromedriver")
     browser.get(url)
     browser.set_window_size(1920, 1080)
     yield browser
