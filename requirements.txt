@@ -3,3 +3,5 @@ pytest-xdist==2.2.1
 selenium==3.141.0
 allure-pytest==2.8.40
 webdriver-manager==3.3.0
+requests==2.23.0
+faker==8.1.0
