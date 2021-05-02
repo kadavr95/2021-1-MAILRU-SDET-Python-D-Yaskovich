@@ -30,11 +30,12 @@ class TestAllureSelenium(BaseCase):
 
     @pytest.mark.UI
     def test_log_in_wrong_password(self):
-        self.unauthorized_page.log_in(login="test20210328@dimini.tk", password="LetMeInLetMeIiiIINNnN")
+        self.unauthorized_page.log_in(login="test20210328@dimini.tk", password="LetMeInLetMeIiiIINNnN",
+                                      authtype="wrong_credentials")
         assert self.unauthorized_page.find(self.unauthorized_page.locators.WRONG_CREDENTIALS_ERROR_LOCATOR)
 
     @pytest.mark.UI
     def test_log_in_login_is_not_email(self):
-        self.unauthorized_page.log_in(login="test20210328", password="U[ti3T5oEauI")
+        self.unauthorized_page.log_in(login="test20210328", password="U[ti3T5oEauI", authtype="invalid_format")
         assert self.unauthorized_page.find(self.unauthorized_page.locators.LOG_IN_ERROR_MESSAGE_LOCATOR)
 

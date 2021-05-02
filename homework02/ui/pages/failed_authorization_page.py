@@ -5,5 +5,5 @@ from ui.locators.pages_locators import FailedAuthorizationPageLocators
 
 
 class FailedAuthorizationPage(BasePage):
-    url = 'https://target.my.com/dashboard'
+    url = 'https://account.my.com/login'
     locators = FailedAuthorizationPageLocators()
