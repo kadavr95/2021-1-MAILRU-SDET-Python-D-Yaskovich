@@ -84,6 +84,36 @@ def file_length(fname):
     return i + 1
 
 
+def parse_log_file(filename):
+    with open(filename) as f:
+        lines = [line.rstrip() for line in f]
+    pattern = re.compile(r'(.*?) [\s\S]*?\"([\w\W]*?) ([\w\W]*?) ([\w\W]*?)\" ([\d]*?) ([\w\W]*?) ([\s\S]*)')
+    requests_types = []
+    urls = []
+    sizes = []
+    urls_with_meta = []
+    origin_ips = []
+    for line in lines:
+        match = pattern.match(line)
+        requests_types += [match.group(2)]
+        urls += [match.group(3)]
+        if match.group(5)[0] == '4':
+            try:
+                current_size = int(match.group(6))
+            except ValueError:
+                current_size = 0
+            urls_with_meta += [{"url": match.group(3), "status_code": match.group(5), "size": current_size,
+                                "origin_ip": match.group(1)}]
+        if match.group(5)[0] == '5':
+            origin_ips += [match.group(1)]
+        try:
+            sizes += [int(match.group(6))]
+        except ValueError:
+            sizes += [0]
+    return {"lines": lines, "requests_types": requests_types, "urls": urls, "sizes": sizes,
+            "urls_with_meta": urls_with_meta, "origin_ips": origin_ips}
+
+
 class MySQLBase:
     prep_results = []
 
@@ -100,34 +130,8 @@ class MySQLBase:
 
 class TestMysql(MySQLBase):
 
-    def prepare(self, filename=FILENAME):
-        with open(filename) as f:
-            lines = [line.rstrip() for line in f]
-        pattern = re.compile(r'(.*?) [\s\S]*?\"([\w\W]*?) ([\w\W]*?) ([\w\W]*?)\" ([\d]*?) ([\w\W]*?) ([\s\S]*)')
-        requests_types = []
-        urls = []
-        sizes = []
-        urls_with_meta = []
-        origin_ips = []
-        for line in lines:
-            match = pattern.match(line)
-            requests_types += [match.group(2)]
-            urls += [match.group(3)]
-            if match.group(5)[0] == '4':
-                try:
-                    current_size = int(match.group(6))
-                except ValueError:
-                    current_size = 0
-                urls_with_meta += [{"url": match.group(3), "status_code": match.group(5), "size": current_size,
-                                    "origin_ip": match.group(1)}]
-            if match.group(5)[0] == '5':
-                origin_ips += [match.group(1)]
-            try:
-                sizes += [int(match.group(6))]
-            except ValueError:
-                sizes += [0]
-        return {"lines": lines, "requests_types": requests_types, "urls": urls, "sizes": sizes,
-                "urls_with_meta": urls_with_meta, "origin_ips": origin_ips}
+    def prepare(self):
+        return parse_log_file(filename=FILENAME)
 
     def test_total_requests(self, filename=FILENAME):
         self.mysql_builder.create_total_requests(requests_count=file_length(filename), filename=filename)
